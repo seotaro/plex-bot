@@ -9,10 +9,10 @@ require('dotenv').config();
 const upload = multer({ storage: multer.memoryStorage() });
 
 var client = new twitter({
-  consumer_key: process.env.CONSUMER_KEY,
-  consumer_secret: process.env.CONSUMER_SECRET,
-  access_token_key: process.env.ACCESS_TOKEN_KEY,
-  access_token_secret: process.env.ACCESS_TOKEN_SECRET
+  consumer_key: process.env.TWITTER_CONSUMER_KEY,
+  consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
+  access_token_key: process.env.TWITTER_ACCESS_TOKEN_KEY,
+  access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET
 });
 
 const app = express();
@@ -31,7 +31,6 @@ app.post('/', upload.single('thumb'), asyncRoute(async (req, res, next) => {
 
     let thumbneil;
     if (req.file && req.file.buffer) {
-      console.log(req.file)
       thumbneil = req.file.buffer;
 
     } else if (payload.thumb) {
@@ -59,10 +58,10 @@ app.post('/', upload.single('thumb'), asyncRoute(async (req, res, next) => {
           return client.post('statuses/update', status)
         })
         .then(function (tweet) {
-          console.log(tweet);
+          console.log("tweet", tweet);
         })
         .catch(function (error) {
-          console.error(error);
+          console.error("tweet error", error);
         })
     } else {
       // 画像なしで tweet する。
@@ -73,15 +72,15 @@ app.post('/', upload.single('thumb'), asyncRoute(async (req, res, next) => {
 
       client.post('statuses/update', status)
         .then(function (tweet) {
-          console.log(tweet);
+          console.log("tweet", tweet);
         })
         .catch(function (error) {
-          console.error(error);
+          console.error("tweet error", error);
         })
     }
   }
 
-  res.sendStatus(200);
+  res.sendStatus(200); // webhook ハンドラーには常に 200 を返す。
 }));
 
 app.use((err, req, res, next) => {
