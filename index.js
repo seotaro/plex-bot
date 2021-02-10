@@ -2,11 +2,9 @@
 
 const express = require('express');
 const multer = require('multer');
-// const sharp = require('sharp');
 const twitter = require('twitter');
 
 const upload = multer({ storage: multer.memoryStorage() });
-
 const app = express();
 
 var client = new twitter({
@@ -45,21 +43,39 @@ app.post('/', upload.single('thumb'), asyncRoute(async (req, res, next) => {
 
     // post to twitter
     (async () => {
-      client.post('media/upload', { media: thumbneil }, function (error, media, response) {
-        if (!error) {
-          console.log(media);
-          const status = {
-            status: message,
-            media_ids: media.media_id_string
-          }
+      if (thumbneil) {
+        // 画像あり
+        client.post('media/upload', { media: thumbneil })
+          .then(function (media) {
+            console.log(media);
 
-          client.post('statuses/update', status, function (error, tweet, response) {
-            if (!error) {
-              console.log(tweet);
+            const status = {
+              status: message,
+              media_ids: media.media_id_string
             }
-          });
+
+            return client.post('statuses/update', status)
+          })
+          .then(function (tweet) {
+            console.log(tweet);
+          })
+          .catch(function (error) {
+            console.error(error);
+          })
+      } else {
+        // 画像なし
+        const status = {
+          status: message,
         }
-      });
+
+        client.post('statuses/update', status)
+          .then(function (tweet) {
+            console.log(tweet);
+          })
+          .catch(function (error) {
+            console.error(error);
+          })
+      }
     })();
   }
 
