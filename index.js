@@ -58,7 +58,7 @@ app.post('/', upload.single('thumb'), asyncRoute(async (req, res, next) => {
           return client.post('statuses/update', status)
         })
         .then(function (tweet) {
-          console.log("tweet", tweet);
+          console.log("tweet", tweet.text.replaceAll('\n', ' '));
         })
         .catch(function (error) {
           console.error("tweet error", error);
@@ -72,7 +72,7 @@ app.post('/', upload.single('thumb'), asyncRoute(async (req, res, next) => {
 
       client.post('statuses/update', status)
         .then(function (tweet) {
-          console.log("tweet", tweet);
+          console.log("tweet", tweet.text.replaceAll('\n', ' '));
         })
         .catch(function (error) {
           console.error("tweet error", error);
