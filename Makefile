@@ -19,7 +19,8 @@ deploy:
 		--image asia.gcr.io/$(PROJECT_ID)/$(APP) \
 		--platform managed \
 		--region asia-northeast1 \
-		--memory 256Mi \
+		--memory 128Mi \
 		--concurrency 1 \
 		--max-instances 2 \
+		--allow-unauthenticated \
 		--flags-file .env.yaml 
