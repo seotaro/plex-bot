@@ -1,0 +1,14 @@
+# VS Code の Remote Containers で使う
+
+version: "3.7"
+
+services:
+  plex-bot:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    tty: true
+    ports:
+      - "11000:8080"
+    volumes:
+      - .:/workspace:cached

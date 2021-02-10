@@ -1,0 +1,12 @@
+{
+  "name": "Plex bot",
+  "dockerComposeFile": [
+    "../docker-compose.yml"
+  ],
+  "service": "plex-bot",
+  "workspaceFolder": "/workspace",
+  "settings": {
+    "terminal.integrated.shell.linux": null
+  },
+  "extensions": []
+}
