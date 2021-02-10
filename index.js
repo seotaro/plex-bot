@@ -4,8 +4,9 @@ const express = require('express');
 const multer = require('multer');
 const twitter = require('twitter');
 
+require('dotenv').config();
+
 const upload = multer({ storage: multer.memoryStorage() });
-const app = express();
 
 var client = new twitter({
   consumer_key: process.env.CONSUMER_KEY,
@@ -14,6 +15,7 @@ var client = new twitter({
   access_token_secret: process.env.ACCESS_TOKEN_SECRET
 });
 
+const app = express();
 
 const asyncRoute = (handler) => {
   return (req, res, next, ...params) => {
@@ -24,10 +26,12 @@ const asyncRoute = (handler) => {
 app.post('/', upload.single('thumb'), asyncRoute(async (req, res, next) => {
   const payload = JSON.parse(req.body.payload);
 
-  // レートが変更したらtwitter, slackに投稿する。
   if (payload.event == 'media.rate') {
+    // レートを変更したら twitter に投稿する。
+
     let thumbneil;
     if (req.file && req.file.buffer) {
+      console.log(req.file)
       thumbneil = req.file.buffer;
 
     } else if (payload.thumb) {
@@ -37,46 +41,44 @@ app.post('/', upload.single('thumb'), asyncRoute(async (req, res, next) => {
       });
     }
 
+    // tweet
     const stars = ("★".repeat(Number(payload.rating) / 2) + "☆☆☆☆☆").substr(0, 5)  // payload.rating は10段階。★は5段階で表現する。
     const message = "#NowRating " + stars + "\n" +
       "\"" + payload.Metadata.title + "\", " + payload.Metadata.parentTitle + ", " + payload.Metadata.grandparentTitle;
 
-    // post to twitter
-    (async () => {
-      if (thumbneil) {
-        // 画像あり
-        client.post('media/upload', { media: thumbneil })
-          .then(function (media) {
-            console.log(media);
+    if (thumbneil) {
+      // 画像ありで tweet する。
 
-            const status = {
-              status: message,
-              media_ids: media.media_id_string
-            }
+      client.post('media/upload', { media: thumbneil })
+        .then(function (media) {
+          const status = {
+            status: message,
+            media_ids: media.media_id_string
+          }
 
-            return client.post('statuses/update', status)
-          })
-          .then(function (tweet) {
-            console.log(tweet);
-          })
-          .catch(function (error) {
-            console.error(error);
-          })
-      } else {
-        // 画像なし
-        const status = {
-          status: message,
-        }
+          return client.post('statuses/update', status)
+        })
+        .then(function (tweet) {
+          console.log(tweet);
+        })
+        .catch(function (error) {
+          console.error(error);
+        })
+    } else {
+      // 画像なしで tweet する。
 
-        client.post('statuses/update', status)
-          .then(function (tweet) {
-            console.log(tweet);
-          })
-          .catch(function (error) {
-            console.error(error);
-          })
+      const status = {
+        status: message,
       }
-    })();
+
+      client.post('statuses/update', status)
+        .then(function (tweet) {
+          console.log(tweet);
+        })
+        .catch(function (error) {
+          console.error(error);
+        })
+    }
   }
 
   res.sendStatus(200);
