@@ -19,7 +19,7 @@ deploy:
 		--image asia.gcr.io/$(PROJECT_ID)/$(APP) \
 		--platform managed \
 		--region asia-northeast1 \
-		--memory 128Mi \
+		--memory 64Mi \
 		--concurrency 1 \
 		--max-instances 2 \
 		--allow-unauthenticated \
