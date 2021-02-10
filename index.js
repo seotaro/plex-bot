@@ -40,10 +40,17 @@ app.post('/', upload.single('thumb'), asyncRoute(async (req, res, next) => {
       });
     }
 
-    // tweet
     const stars = ("★".repeat(Number(payload.rating) / 2) + "☆☆☆☆☆").substr(0, 5)  // payload.rating は10段階。★は5段階で表現する。
-    const message = "#NowRating " + stars + "\n" +
-      "\"" + payload.Metadata.title + "\", " + payload.Metadata.parentTitle + ", " + payload.Metadata.grandparentTitle;
+
+    let message = "#NowRating " + stars + "\n";
+    if (payload.Metadata.grandparentTitle) {
+      // track
+      message += "\"" + payload.Metadata.title + "\", [" + payload.Metadata.parentTitle + "], " + payload.Metadata.grandparentTitle;
+
+    } else {
+      // album
+      message += "[" + payload.Metadata.title + "], " + payload.Metadata.parentTitle;
+    }
 
     if (thumbneil) {
       // 画像ありで tweet する。
