@@ -41,9 +41,7 @@ app.post('/', upload.single('thumb'), asyncRoute(async (req, res, next) => {
       });
     }
 
-    const stars = ("★".repeat(rating / 2) + "☆☆☆☆☆").substr(0, 5)  // payload.rating は10段階。★は5段階で表現する。
-
-    let message = stars + "\n";
+    let message = "";
     if (payload.Metadata.grandparentTitle) {
       // track
       message += "track: " + payload.Metadata.title + "\nalbum: " + payload.Metadata.parentTitle + "\nartist: " + payload.Metadata.grandparentTitle + "\n";
@@ -52,7 +50,7 @@ app.post('/', upload.single('thumb'), asyncRoute(async (req, res, next) => {
       // album
       message += "album: " + payload.Metadata.title + "\nartist: " + payload.Metadata.parentTitle + "\n";
     }
-    message += "#NowRating";
+    message += "#like";
 
     if (thumbneil) {
       // 画像ありで tweet する。
