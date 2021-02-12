@@ -42,15 +42,16 @@ app.post('/', upload.single('thumb'), asyncRoute(async (req, res, next) => {
 
     const stars = ("★".repeat(Number(payload.rating) / 2) + "☆☆☆☆☆").substr(0, 5)  // payload.rating は10段階。★は5段階で表現する。
 
-    let message = "#NowRating " + stars + "\n";
+    let message = stars + "\n";
     if (payload.Metadata.grandparentTitle) {
       // track
-      message += "\"" + payload.Metadata.title + "\", [" + payload.Metadata.parentTitle + "], " + payload.Metadata.grandparentTitle;
+      message += "track: " + payload.Metadata.title + "\nalbum: " + payload.Metadata.parentTitle + "\nartist: " + payload.Metadata.grandparentTitle + "\n";
 
     } else {
       // album
-      message += "[" + payload.Metadata.title + "], " + payload.Metadata.parentTitle;
+      message += "album: " + payload.Metadata.title + "\nartist: " + payload.Metadata.parentTitle + "\n";
     }
+    message += "#NowRating";
 
     if (thumbneil) {
       // 画像ありで tweet する。
