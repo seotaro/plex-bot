@@ -1,5 +1,4 @@
 PROJECT_ID := 
-ACCOUNT := 
 APP := plex-bot
 
 usage:
@@ -19,7 +18,7 @@ deploy:
 		--image asia.gcr.io/$(PROJECT_ID)/$(APP) \
 		--platform managed \
 		--region asia-northeast1 \
-		--memory 64Mi \
+		--memory 128Mi \
 		--concurrency 1 \
 		--max-instances 2 \
 		--allow-unauthenticated \
