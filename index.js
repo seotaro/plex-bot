@@ -26,8 +26,9 @@ const asyncRoute = (handler) => {
 app.post('/', upload.single('thumb'), asyncRoute(async (req, res, next) => {
   const payload = JSON.parse(req.body.payload);
 
-  if (payload.event == 'media.rate') {
-    // レートを変更したら twitter に投稿する。
+  let rating = Number(payload.rating);
+  if (payload.event == 'media.rate' && 5 < rating) {
+    // レートを変更して★3つ以上（ rating は6以上）になったら twitter に投稿する。
 
     let thumbneil;
     if (req.file && req.file.buffer) {
@@ -40,7 +41,7 @@ app.post('/', upload.single('thumb'), asyncRoute(async (req, res, next) => {
       });
     }
 
-    const stars = ("★".repeat(Number(payload.rating) / 2) + "☆☆☆☆☆").substr(0, 5)  // payload.rating は10段階。★は5段階で表現する。
+    const stars = ("★".repeat(rating / 2) + "☆☆☆☆☆").substr(0, 5)  // payload.rating は10段階。★は5段階で表現する。
 
     let message = stars + "\n";
     if (payload.Metadata.grandparentTitle) {
