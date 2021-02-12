@@ -1,5 +1,4 @@
 PROJECT_ID := 
-ACCOUNT := 
 APP := plex-bot
 
 usage:
