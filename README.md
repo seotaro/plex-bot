@@ -1,6 +1,6 @@
 # plex-bot
 
-[plex media server](https://www.plex.tv/) の webhook を使って、曲のレーティングが変更されたら twitter に投稿する。
+[plex media server](https://www.plex.tv/) の webhook を使って、曲のレーティングが★3つ以上（ rating は6以上）になったら twitter に投稿する。
 
 webhook のエンドポイントは Google Cloud Run（以下、GCR） に実装した。
 
