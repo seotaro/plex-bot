@@ -4,21 +4,18 @@ APP := plex-bot
 usage:
 	@echo "usage: make <rule>"
 
-set-cloud-configs:
+login-gcp:
 	gcloud auth login
-	gcloud config set project $(PROJECT_ID)
-
-build:
-	gcloud builds submit . --tag asia.gcr.io/$(PROJECT_ID)/$(APP)
 
 deploy:
+	gcloud builds submit . --tag asia.gcr.io/$(PROJECT_ID)/$(APP)
 	gcloud services enable run.googleapis.com
 	gcloud run deploy $(APP) \
 		--project $(PROJECT_ID) \
 		--image asia.gcr.io/$(PROJECT_ID)/$(APP) \
 		--platform managed \
 		--region asia-northeast1 \
-		--memory 64Mi \
+		--memory 128Mi \
 		--concurrency 1 \
 		--max-instances 2 \
 		--allow-unauthenticated \
