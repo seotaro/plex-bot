@@ -4,14 +4,11 @@ APP := plex-bot
 usage:
 	@echo "usage: make <rule>"
 
-set-cloud-configs:
+login-gcp:
 	gcloud auth login
-	gcloud config set project $(PROJECT_ID)
-
-build:
-	gcloud builds submit . --tag asia.gcr.io/$(PROJECT_ID)/$(APP)
 
 deploy:
+	gcloud builds submit . --tag asia.gcr.io/$(PROJECT_ID)/$(APP)
 	gcloud services enable run.googleapis.com
 	gcloud run deploy $(APP) \
 		--project $(PROJECT_ID) \
